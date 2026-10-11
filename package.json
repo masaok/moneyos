@@ -7,8 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "check:docs": "node scripts/check-docs-links.mjs",
+    "check:docs:test": "node scripts/check-docs-links.test.mjs",
+    "check:public": "bash scripts/check-public.sh",
+    "check:public:test": "bash scripts/check-public.test.sh",
+    "ci": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run check:docs:test && pnpm run check:docs && pnpm run check:public:test && pnpm run check:public",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "16.4.0",
@@ -30,5 +38,11 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@12.4.1"
+  "packageManager": "pnpm@12.4.1",
+  "engines": {
+    "node": "24.x"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
+  }
 }

@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MoneyOS
 
-## Getting Started
+The public, open-source home of [MoneyOS](https://moneyos.cc), a personal finance assistant
+that explains your money in plain English. The hosted product at moneyos.cc lives in a
+separate private repository; this one is where code that anyone can read, run and
+contribute to is built.
 
-First, run the development server:
+## What is here today
+
+- A Next.js 16 scaffold (App Router, React 19, TypeScript, Tailwind CSS 4) in `src/app/`.
+  The page is still the create-next-app placeholder.
+- The engineering gates: formatter, linter, typecheck, production build, Markdown link
+  checker and a public-repository guardrail, run by git hooks locally and by GitHub
+  Actions on every push and pull request. See [`docs/engineering-practices.md`](docs/engineering-practices.md)
+  for the full audit of what is applied and what was deliberately left out.
+
+No product code has landed yet. This README describes what exists; it is updated as the
+layout changes.
+
+## Getting started
+
+Requires Node 24 (see `.nvmrc`) and pnpm (version pinned in `package.json`).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command                 | What it does                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| `pnpm run ci`           | Everything CI runs except the build: typecheck, lint, format, docs, guardrails |
+| `pnpm run build`        | Production build, the same way the host builds it                              |
+| `pnpm run lint:fix`     | ESLint with auto-fix. Run by a person, never by a hook or CI                   |
+| `pnpm run format`       | Prettier, writing. The pre-commit hook runs this on staged files only          |
+| `pnpm run check:docs`   | Relative links and heading anchors in every Markdown file                      |
+| `pnpm run check:public` | No private paths, env files or credential patterns in the tree                 |
 
-## Learn More
+Each hand-written checker ships with a test that proves it can fail
+(`check:docs:test`, `check:public:test`); CI runs the proof before the check.
 
-To learn more about Next.js, take a look at the following resources:
+`pnpm install` installs two git hooks: pre-commit formats the staged files, pre-push runs
+`pnpm run ci` and the production build. The workflow in `.github/workflows/ci.yml` runs
+the same checks on a hosted runner, one named job each, so they can be required on `main`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+.github/          CI workflow, shared setup action, Dependabot, pull request template
+.husky/           pre-commit (format staged files) and pre-push (ci + build)
+docs/             Living documents, link-checked in CI
+scripts/          Hand-written checkers and their proof-of-failure tests
+src/app/          Next.js App Router: layout, page, global styles
+```

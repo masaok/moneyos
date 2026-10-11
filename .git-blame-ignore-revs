@@ -1,0 +1,6 @@
+# Commits that changed formatting only. Point git at this file once per clone:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub's blame view reads it automatically.
+
+# Install prettier and reformat the scaffold
+8ba78bc1dd8cb6782830be853c19b7d1f6f7a490

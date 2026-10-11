@@ -1,0 +1,44 @@
+version: 2
+
+updates:
+  # npm: minor and patch bumps collapse into one weekly pull request so routine
+  # updates cost one review. Majors arrive one at a time, because those are the
+  # ones that break a build and deserve their own diff.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    # pnpm verifies every lockfile entry against a minimum release age at
+    # install time. A week of community exposure also stands in for the review
+    # a routine bump never gets. Security updates ignore the cooldown.
+    cooldown:
+      default-days: 7
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Pinned to the runtime major declared in .nvmrc and engines.node. The
+      # types must not run ahead of the runtime they describe.
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+      # Next's TypeScript probe and eslint-config-next do not support the
+      # TypeScript 7 package layout yet. Minor and patch bumps still come through.
+      - dependency-name: "typescript"
+        update-types: [version-update:semver-major]
+      # @typescript-eslint still extends an export that ESLint 10 removed.
+      # Remove this entry once typescript-eslint supports ESLint 10.
+      - dependency-name: "eslint"
+        update-types: [version-update:semver-major]
+
+  # Keeps the SHA pins in .github/workflows fresh. Without this the pins rot
+  # quietly, which is the usual reason teams fall back to floating tags.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ["*"]
