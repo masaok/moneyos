@@ -1,0 +1,11 @@
+# Generated or vendored. Everything else is formatted; the pre-commit hook
+# formats staged files and CI checks the whole tree.
+node_modules/
+.next/
+out/
+coverage/
+pnpm-lock.yaml
+next-env.d.ts
+# `next dev` rewrites its block in this file verbatim; formatting it would
+# create a diff that the next dev run undoes.
+AGENTS.md
