@@ -75,11 +75,11 @@ echo "SECRET=1" > "$r/.env.local"
 expect_pass "$r" "ignored .env file is allowed"
 
 r="$(make_repo aws-key)"
-echo "key = AKIAABCDEFGHIJKLMNOP" > "$r/config.txt"
+echo "key = AKIAABCDEFGHIJKLMNOP" > "$r/config.txt" # gitleaks:allow (fixture: must trip the guardrail)
 expect_fail "$r" "AWS access key pattern"
 
 r="$(make_repo db-url)"
-echo "postgres://user:pass@db.example.com/x" > "$r/db.txt"
+echo "postgres://user:pass@db.example.com/x" > "$r/db.txt" # gitleaks:allow (fixture: must trip the guardrail)
 expect_fail "$r" "database URL with credentials"
 
 echo "check-public.test: all assertions passed"
